@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataPulse — Observability for dbt + Airflow pipelines</title>
+    <meta name="description" content="Stop guessing why your data pipelines break. DataPulse gives you real-time observability, alerts, and lineage for dbt and Airflow.">
+    <meta name="keywords" content="dbt, airflow, data observability, data pipelines, data engineering, ETL monitoring">
+    <meta property="og:title" content="DataPulse — Observability for dbt + Airflow pipelines">
+    <meta property="og:description" content="Stop guessing why your data pipelines break. Real-time observability for modern data teams.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="logo-100x100.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0EA5E9;
+            --primary-dark: #0284C7;
+            --secondary: #6366F1;
+            --accent: #22D3EE;
+            --dark: #0F172A;
+            --dark-light: #1E293B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --success: #10B981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            animation: pulse 20s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, -20px) scale(1.05); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 40px 0;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 32px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+        
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .cta-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: blink 2s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Tally Form Embed */
+        .signup-form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+        }
+        
+        .tally-frame {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* Problem Section */
+        .problem {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        
+        .section-tag {
+            display: inline-block;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        
+        .problem-card {
+            background: var(--light);
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        
+        .problem-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .problem-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .problem-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+        
+        .problem-card p {
+            color: var(--gray);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* Solution Section */
+        .solution {
+            padding: 100px 0;
+            background: var(--light);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: var(--dark);
+            color: white;
+        }
+        
+        .pricing .section-title {
+            color: white;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: var(--dark-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--dark-light) 0%, rgba(14, 165, 233, 0.1) 100%);
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .pricing-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+        
+        .pricing-features li {
+            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Footer CTA */
+        .footer-cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            text-align: center;
+        }
+        
+        .footer-cta h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .footer-cta p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.125rem;
+            margin-bottom: 32px;
+        }
+        
+        .footer-cta .btn {
+            background: white;
+            color: var(--primary);
+            width: auto;
+            padding: 16px 40px;
+        }
+        
+        .footer-cta .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .signup-form {
+                padding: 24px;
+            }
+            
+            .problem, .solution, .pricing {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="logo-400x400.png" alt="DataPulse Logo" class="logo">
+            <div class="cta-badge">Early Access — Join 50+ data teams</div>
+            <h1>Observability for <span>dbt + Airflow</span></h1>
+            <p class="hero-subtitle">Stop guessing why your data pipelines break. Get real-time alerts, lineage tracking, and root cause analysis in one dashboard.</p>
+            
+            <div class="signup-form">
+                <p class="form-title">Get early access</p>
+                <p class="form-subtitle">Be the first to know when we launch. No spam, ever.</p>
+                <iframe data-tally-src="https://tally.so/embed/w7X9y5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="120" frameborder="0" marginheight="0" marginwidth="0" title="DataPulse Waitlist"></iframe>
+                <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">The Problem</span>
+                <h2 class="section-title">Data pipelines fail silently</h2>
+                <p style="color: var(--gray); max-width: 600px; margin: 0 auto;">Your stakeholders notice broken dashboards before you do. Sound familiar?</p>
+            </div>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">🔥</div>
+                    <h3>Silent Failures</h3>
+                    <p>dbt tests pass but dashboards show stale data. Airflow tasks fail at 2 AM and nobody knows until the CEO asks.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🔍</div>
+                    <h3>No Root Cause</h3>
+                    <p>When pipelines break, you spend hours digging through logs across dbt, Airflow, and your warehouse. Time you don't have.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">😰</div>
+                    <h3>Reactive Firefighting</h3>
+                    <p>You're always playing catch-up. By the time you fix one issue, three more have popped up downstream.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">The Solution</span>
+                <h2 class="section-title">Complete pipeline visibility</h2>
+                <p style="color: var(--gray); max-width: 600px; margin: 0 auto;">DataPulse monitors your entire data stack and tells you exactly what's wrong, before your stakeholders do.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Unified Dashboard</h3>
+                    <p>See dbt models, Airflow DAGs, and data quality metrics in one place. No more tab switching.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-time Alerts</h3>
+                    <p>Get notified in Slack when tests fail, runs are late, or anomalies are detected. Customizable and actionable.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Column-level Lineage</h3>
+                    <p>Trace any data issue back to its source. Understand impact before making changes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Debugging</h3>
+                    <p>AI-powered root cause analysis that points you to the exact model, task, or schema change causing issues.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Cost Monitoring</h3>
+                    <p>Track warehouse spend by model and user. Identify expensive queries before they blow your budget.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Security & Governance</h3>
+                    <p>Monitor access patterns, detect PII exposure risks, and maintain audit trails automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag" style="color: var(--accent);">Pricing</span>
+                <h2 class="section-title">Simple, transparent pricing</h2>
+                <p style="color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto;">Start free, scale as you grow. No hidden fees, no surprises.</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="pricing-price">$0<span>/month</span></div>
+                    <p class="pricing-desc">Perfect for solo data engineers</p>
+                    <ul class="pricing-features">
+                        <li>1 connected warehouse</li>
+                        <li>Up to 100 models</li>
+                        <li>7-day data retention</li>
+                        <li>Email alerts</li>
+                        <li>Community support</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Get Started Free</button>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <span class="pricing-badge">Most Popular</span>
+                    <h3>Team</h3>
+                    <div class="pricing-price">$99<span>/month</span></div>
+                    <p class="pricing-desc">For growing data teams</p>
+                    <ul class="pricing-features">
+                        <li>Unlimited warehouses</li>
+                        <li>Unlimited models</li>
+                        <li>90-day data retention</li>
+                        <li>Slack + PagerDuty alerts</li>
+                        <li>Column-level lineage</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Start Free Trial</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="pricing-price">Custom</div>
+                    <p class="pricing-desc">For large organizations</p>
+                    <ul class="pricing-features">
+                        <li>Everything in Team</li>
+                        <li>Unlimited retention</li>
+                        <li>SSO & advanced security</li>
+                        <li>Custom integrations</li>
+                        <li>Dedicated success manager</li>
+                        <li>SLA guarantee</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="footer-cta">
+        <div class="container">
+            <h2>Ready to stop firefighting?</h2>
+            <p>Join the waitlist and be the first to get access.</p>
+            <button class="btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Get Early Access →</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 DataPulse. All rights reserved. | Built with ❤️ for data teams</p>
+        </div>
+    </footer>
+</body>
+</html>
